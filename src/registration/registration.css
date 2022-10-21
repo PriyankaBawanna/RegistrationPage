@@ -1,0 +1,13 @@
+.registrationPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 38rem;
+}
+
+.registrationFrom {
+  width: 30rem;
+  height: 30rem;
+  border: 1px solid black;
+}
