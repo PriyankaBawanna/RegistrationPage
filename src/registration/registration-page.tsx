@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import "./registration.css";
+import { RadioButton } from "../radio-button/radio-button";
+import { handleCallMethod } from "../post-api/api";
+import Checkbox from "../check-box/checkbox";
 
 export default function Registration() {
   const [name, setName] = useState("");
@@ -9,8 +11,22 @@ export default function Registration() {
   const options = ["One", "Two", "Three", "Four", "Five"];
   const [gender, setGender] = useState("male");
   const [year, setYear] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-  const body = { name, email, mobileNo, gender, year };
+  const [mobileNoError, setMobileNoError] = useState(false);
+
+  let body = { name, email, mobileNo, gender, year };
+
+  const radioChangeHandler = (e: any) => {
+    setGender(e.target.value);
+  };
+
+  const handleMobileInput = () => {
+    const regEx = /^([+]\d{2}[ ])?\d{9}$/;
+    if (regEx.test(mobileNo)) {
+      setMobileNoError(false);
+    } else if (!regEx.test(mobileNo) && mobileNo !== "") {
+      setMobileNoError(true);
+    }
+  };
 
   const handleInputEmail = () => {
     const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
@@ -19,29 +35,6 @@ export default function Registration() {
     } else if (!regEx.test(email) && email !== "") {
       setEmailError(true);
     }
-  };
-
-  function onChangeValue(event: any) {
-    setGender(event.target.value);
-    console.log(event.target.value);
-  }
-  const handleSubmit = async () => {
-    console.log("body", body);
-    try {
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      };
-      fetch("http://localhost:8085/register", requestOptions).then((response) =>
-        response.json()
-      );
-    } catch {
-      alert("error");
-    }
-    setName("");
-    setEmail("");
-    setMobileNo("");
   };
 
   const onOptionChangeHandler = (event: any) => {
@@ -72,8 +65,8 @@ export default function Registration() {
             placeholder="email"
             value={email}
             onChange={(event) => {
-              setEmail(event.target.value);
               handleInputEmail();
+              setEmail(event.target.value);
             }}
           />
           {emailError ? (
@@ -90,10 +83,15 @@ export default function Registration() {
             placeholder="mobile"
             value={mobileNo}
             onChange={(event) => {
+              handleMobileInput();
               setMobileNo(event.target.value);
-              handleInputEmail();
             }}
           />
+          {mobileNoError ? (
+            <span className="inputError">mobile not valid</span>
+          ) : (
+            <span></span>
+          )}
         </div>
         <div>
           <select onChange={onOptionChangeHandler} className="selectBox">
@@ -110,35 +108,33 @@ export default function Registration() {
           </select>
         </div>
         <div>
-          <div onChange={onChangeValue} className="radioGroup">
-            <input
-              type="radio"
-              value="Male"
-              name="gender"
-              checked={gender === "Male"}
-              data-test="male"
-              className="male"
-            />
-            Male
-            <input
-              type="radio"
-              value="Female"
-              name="gender"
-              checked={gender === "Female"}
-              data-test="female"
-              className="female"
-            />
-            Female
-          </div>
-          <p>{gender}</p>
-        </div>
+          <RadioButton
+            changed={radioChangeHandler}
+            id="1"
+            isSelected={gender === "male"}
+            label="male"
+            value="male"
+            className="inputRadio"
+          />
 
+          <RadioButton
+            changed={radioChangeHandler}
+            id="2"
+            isSelected={gender === "female"}
+            label="female"
+            value="female"
+          />
+          <h2>{gender}</h2>
+        </div>
+        <Checkbox
+          labelOn="i accepted term and conditions"
+          labelOff="please accept terms and condition "
+        />
         <div>
           <button
             className="submitButton"
-            onClick={(e) => {
-              e.preventDefault();
-              handleSubmit();
+            onClick={() => {
+              handleCallMethod({ ...body });
             }}
           >
             Submit

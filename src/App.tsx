@@ -1,15 +1,15 @@
 import React from "react";
-import logo from "./logo.svg";
+import "./style.css";
 import "./App.css";
-import Registration from "./registration/registrationPage";
+import Registration from "./registration/registration-page";
+import PokemonList from "./pockemon-list/pockemon-list";
 
-import TestFun from "./api/testFun";
 function App() {
   return (
     <>
-      {/* <Registration /> */}
-      <h1>Hello</h1>
-      <TestFun />
+      {/* <Registration />
+      <h1>Hello</h1> */}
+      <PokemonList />
     </>
   );
 }

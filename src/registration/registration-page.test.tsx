@@ -1,7 +1,9 @@
 import { shallow } from "enzyme";
-import Registration from "./registrationPage";
+import Registration from "./registration-page";
 
-import { findByTestAttribute, findByClassAttribute } from "../test/testUtils";
+import { findByTestAttribute, findByClassAttribute } from "../test/test-utils";
+import { RadioButton } from "../radio-button/radio-button";
+import exp from "constants";
 
 // create a common wrapper
 const setup = () => {
@@ -85,20 +87,6 @@ describe("Test case for Mobile  ", () => {
   });
 });
 
-describe("Test case for Radio Button ", () => {
-  test("check Radio Button present Or Not ", () => {
-    const wrapper = setup();
-    const RadioButton = findByClassAttribute(wrapper, "radioGroup");
-    expect(RadioButton.length).toBe(1);
-
-    const maleButton = findByTestAttribute(wrapper, "male");
-    expect(maleButton.length).toBe(1);
-
-    const femaleButton = findByTestAttribute(wrapper, "female");
-    expect(femaleButton.length).toBe(1);
-  });
-});
-
 describe("Test select box", () => {
   test("select box render without any error ", () => {
     const wrapper = setup();
@@ -157,16 +145,30 @@ describe("Test select box", () => {
   });
 });
 
-describe("test case for Submit Button ", () => {
-  test("Check Submit Button Present or not", () => {
-    const wrapper = setup();
-    const submitButton = findByClassAttribute(wrapper, "submitButton");
-    expect(submitButton.length).toBe(1);
-  });
-  test("after click submit button Input Filed Should be Empty ", () => {
-    const wrapper = setup();
-    const submitButton = findByClassAttribute(wrapper, "submitButton");
-    submitButton.simulate("click", { preventDefault() {} });
-    expect(mockSetCurrentInput).toHaveBeenCalledWith("");
-  });
+test("matches email regEx", () => {
+  const wrapper = setup();
+  const value = "priyanka@gmail.com";
+  const emailRegEx = /[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
+  const inputBox = findByTestAttribute(wrapper, "inputEmail");
+  const mockEvent = { target: { value } };
+  inputBox.simulate("change", mockEvent);
+  expect(mockEvent.target.value).toMatch(emailRegEx);
+});
+
+test("check the length of mobile no ", () => {
+  const wrapper = setup();
+  const mobileNoLength = /^([+]\d{2}[ ])?\d{9}$/;
+  const inputBox = findByTestAttribute(wrapper, "inputMobile");
+  const mockEvent = { target: { value: "1234567890" } };
+  inputBox.simulate("change", mockEvent);
+  expect(mockEvent.target.value).toMatch(mobileNoLength);
+});
+
+test.only("test case for check box", () => {
+  const wrapper = setup();
+  const checkbox = findByClassAttribute(wrapper, "check-box");
+  expect(checkbox.length).toBe(1);
+  const mockEvent = { target: { value: true } };
+  checkbox.simulate("click", mockEvent);
+  expect(checkbox).toBeTruthy();
 });

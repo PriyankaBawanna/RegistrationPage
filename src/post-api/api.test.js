@@ -1,6 +1,6 @@
-import postApi from "./postApi";
 import { request } from "http";
 import { fetchData } from "./postApi";
+import { url } from "../constant-file/constant";
 describe("POST/api/users", () => {
   test("Register new user ", async () => {
     let user = {
@@ -10,9 +10,7 @@ describe("POST/api/users", () => {
       year: "One",
     };
 
-    const response = await request(postApi)
-      .post("http://localhost:8085/register")
-      .send(user);
+    const response = await request(postApi).post(url).send(user);
     console.log("user response", response);
     expect(response.error).toBe(false);
     expect(response.status).toBe(200);
